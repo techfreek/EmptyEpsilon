@@ -2,7 +2,7 @@
 #include "input.h"
 
 GuiTextEntry::GuiTextEntry(GuiContainer* owner, string id, string text)
-: GuiElement(owner, id), text(text), text_size(30), func(nullptr)
+: GuiElement(owner, id), text(text), text_size(30), obscured(false), func(nullptr)
 {
 }
 
@@ -18,7 +18,12 @@ void GuiTextEntry::onDraw(sf::RenderTarget& window)
         typing_indicator = false;
     if (blink_clock.getElapsedTime().asSeconds() > blink_rate * 2.0f)
         blink_clock.restart();
-    drawText(window, sf::FloatRect(rect.left + 16, rect.top, rect.width, rect.height), text + (typing_indicator ? "_" : ""), ACenterLeft, text_size, main_font, selectColor(colorConfig.text_entry.forground));
+    string output = string(text);
+    if (obscured && text.length() > 1) {
+        output = std::string(text.length() - 1, '*');
+        output += text.back();
+    }
+    drawText(window, sf::FloatRect(rect.left + 16, rect.top, rect.width, rect.height), output + (typing_indicator ? "_" : ""), ACenterLeft, text_size, main_font, selectColor(colorConfig.text_entry.forground));
 }
 
 bool GuiTextEntry::onMouseDown(sf::Vector2f position)
@@ -100,5 +105,11 @@ GuiTextEntry* GuiTextEntry::callback(func_t func)
 GuiTextEntry* GuiTextEntry::enterCallback(func_t func)
 {
     this->enter_func = func;
+    return this;
+}
+
+GuiTextEntry* GuiTextEntry::obscure()
+{
+    this->obscured = true;
     return this;
 }

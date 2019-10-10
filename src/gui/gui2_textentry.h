@@ -11,6 +11,7 @@ public:
 protected:
     string text;
     float text_size;
+    bool obscured;
     func_t func;
     func_t enter_func;
     sf::Clock blink_clock;
@@ -26,6 +27,7 @@ public:
     GuiTextEntry* setTextSize(float size);
     GuiTextEntry* callback(func_t func);
     GuiTextEntry* enterCallback(func_t func);
+    GuiTextEntry* obscure();
 };
 
 #endif//GUI2_TEXTENTRY_H
